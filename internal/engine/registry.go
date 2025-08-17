@@ -1,43 +1,41 @@
-// Copyright (c) 2024 The MdLint Authors.
+// (c) 2025 Asymmetric Effort, LLC
 //
 // Package engine provides a simple rule registry and finding types.
+
 package engine
 
-// Rule defines the interface for linter rules.
-type Rule interface {
-	// ID returns the rule identifier, e.g. "MD1000".
-	ID() string
-	// Apply evaluates the rule against the provided Markdown content using
-	// the supplied configuration. The configuration type is rule specific.
-	Apply(content string, cfg any) []Finding
-}
+import (
+	"sort"
+	"sync"
+)
 
-// Finding represents a single rule violation.
-type Finding struct {
-	Rule    string // Rule identifier.
-	Line    int    // 1-indexed line number.
-	Column  int    // 1-indexed column number.
-	Message string // Human-readable description of the issue.
-}
+// registry holds all registered rules keyed by their identifier.
+var (
+	registry   = map[string]Rule{}
+	registryMu sync.RWMutex
+)
 
-var registry = map[string]Rule{}
-
-// RegisterRule adds a rule implementation to the registry.
-func RegisterRule(r Rule) {
-	registry[r.ID()] = r
-}
-
-// GetRule returns a registered rule by ID.
-func GetRule(id string) (Rule, bool) {
-	r, ok := registry[id]
-	return r, ok
-}
-
-// Rules returns all registered rules.
-func Rules() []Rule {
-	rs := make([]Rule, 0, len(registry))
-	for _, r := range registry {
-		rs = append(rs, r)
+// Register adds the given rule to the global registry. It panics if a rule with
+// the same ID has already been registered. Registration is typically performed
+// in the rule's init function.
+func Register(rule Rule) {
+	registryMu.Lock()
+	defer registryMu.Unlock()
+	id := rule.ID()
+	if _, exists := registry[id]; exists {
+		panic("rule already registered: " + id)
 	}
-	return rs
+	registry[id] = rule
 }
+
+// Rules returns all registered rules sorted by their identifiers. The returned
+// slice is a copy and modifications to it do not affect the registry.
+func Rules() []Rule {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
+	rules := make([]Rule, 0, len(registry))
+	for _, r := range registry {
+		rules = append(rules, r)
+	}
+	sort.Slice(rules, func(i, j int) bool { return rules[i].ID() < rules[j].ID() })
+	return rules
