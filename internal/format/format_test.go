@@ -1,6 +1,7 @@
-// Copyright (c) 2024
+// Copyright 2025 Sam Caldwell
+// SPDX-License-Identifier: MIT
 
-package format_test
+package format
 
 import (
 	"os"

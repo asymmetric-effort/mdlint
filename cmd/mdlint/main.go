@@ -1,5 +1,7 @@
-// Copyright 2024 MdLint Authors
+// Copyright 2025 Sam Caldwell
+// SPDX-License-Identifier: MIT
 
+// Package main provides the command-line interface for mdlint.
 package main
 
 import (

@@ -1,4 +1,5 @@
-// Copyright (c) 2024 Asymmetric Effort
+// Copyright 2025 Sam Caldwell
+// SPDX-License-Identifier: MIT
 
 package markdown
 
@@ -55,3 +56,4 @@ func TestParserSupportsExtensions(t *testing.T) {
 		t.Fatalf("expected parsed document")
 	}
 }
+

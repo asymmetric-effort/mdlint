@@ -1,3 +1,6 @@
+// Copyright 2025 Sam Caldwell
+// SPDX-License-Identifier: MIT
+
 package config
 
 import (
@@ -84,3 +87,4 @@ func TestLoadValidationError(t *testing.T) {
 		t.Fatalf("expected error for unknown field")
 	}
 }
+
