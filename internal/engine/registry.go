@@ -1,4 +1,6 @@
-// Copyright 2024
+// (c) 2025 Asymmetric Effort, LLC
+//
+// Package engine provides a simple rule registry and finding types.
 
 package engine
 
@@ -37,4 +39,3 @@ func Rules() []Rule {
 	}
 	sort.Slice(rules, func(i, j int) bool { return rules[i].ID() < rules[j].ID() })
 	return rules
-}
