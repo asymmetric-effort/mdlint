@@ -9,38 +9,43 @@ func TestCheckCodeBlockLanguages(t *testing.T) {
 		name string
 		src  string
 		cfg  Config
-		want int
+		want []Finding
 	}{
 		{
 			name: "unknown language",
 			src:  "```foobar\ncode\n```\n",
 			cfg:  Config{},
-			want: 1,
+			want: []Finding{{Line: 1, Message: "unknown language \"foobar\""}},
 		},
 		{
 			name: "missing language",
 			src:  "```\ncode\n```\n",
 			cfg:  Config{},
-			want: 1,
+			want: []Finding{{Line: 1, Message: "code fence is missing a language identifier"}},
 		},
 		{
 			name: "allowed language",
 			src:  "```go\ncode\n```\n",
 			cfg:  Config{Allowed: []string{"go"}},
-			want: 0,
+			want: nil,
 		},
 		{
 			name: "disallowed language",
 			src:  "```python\ncode\n```\n",
 			cfg:  Config{Allowed: []string{"go"}},
-			want: 1,
+			want: []Finding{{Line: 1, Message: "language \"python\" not allowed"}},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := CheckCodeBlockLanguages([]byte(tt.src), tt.cfg)
-			if len(got) != tt.want {
-				t.Fatalf("got %d findings, want %d", len(got), tt.want)
+			if len(got) != len(tt.want) {
+				t.Fatalf("got %d findings, want %d", len(got), len(tt.want))
+			}
+			for i := range tt.want {
+				if got[i] != tt.want[i] {
+					t.Fatalf("finding %d: got %+v, want %+v", i, got[i], tt.want[i])
+				}
 			}
 		})
 	}
