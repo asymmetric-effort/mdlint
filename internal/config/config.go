@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -250,3 +249,4 @@ func userConfigPath() string {
 	}
 	return filepath.Join(home, ".config", "mdlint", "config.yaml")
 }
+
