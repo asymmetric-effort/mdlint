@@ -1,0 +1,36 @@
+# Goreleaser configuration for mdlint.
+#
+# This file defines how binaries are built and published.
+project_name: mdlint
+
+builds:
+  - id: mdlint
+    main: ./cmd/mdlint
+    binary: mdlint
+    ldflags:
+      - -s -w
+      - -X github.com/sam-caldwell/mdlint/internal/version.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: tar.gz
+    files:
+      - LICENSE
+      - README.md
+
+changelog:
+  use: git
+
+release:
+  github:
+    owner: sam-caldwell
+    name: mdlint
+
