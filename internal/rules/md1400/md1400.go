@@ -22,6 +22,16 @@ type Config struct {
 	Allowed []string
 }
 
+// allowedMap returns a set of allowed language identifiers in lowercase for
+// quick membership testing.
+func (c Config) allowedMap() map[string]struct{} {
+	m := make(map[string]struct{}, len(c.Allowed))
+	for _, lang := range c.Allowed {
+		m[strings.ToLower(lang)] = struct{}{}
+	}
+	return m
+}
+
 // Finding reports a code fence language issue.
 type Finding struct {
 	// Line is the line number where the fence starts.
@@ -36,10 +46,7 @@ func CheckCodeBlockLanguages(src []byte, cfg Config) []Finding {
 	md := goldmark.New()
 	root := md.Parser().Parse(text.NewReader(src))
 
-	allowed := map[string]struct{}{}
-	for _, lang := range cfg.Allowed {
-		allowed[strings.ToLower(lang)] = struct{}{}
-	}
+	allowed := cfg.allowedMap()
 
 	var findings []Finding
 	ast.Walk(root, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -49,7 +56,7 @@ func CheckCodeBlockLanguages(src []byte, cfg Config) []Finding {
 		}
 		lang := strings.ToLower(string(block.Language(src)))
 		seg := block.Lines().At(0)
-		line := bytes.Count(src[:seg.Start], []byte("\n")) + 1
+		line := bytes.Count(src[:seg.Start], []byte("\n"))
 
 		if lang == "" {
 			findings = append(findings, Finding{Line: line, Message: "code fence is missing a language identifier"})
