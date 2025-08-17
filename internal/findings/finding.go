@@ -1,4 +1,4 @@
-// Copyright (c) 2024
+right (c) 2024
 
 package findings
 
@@ -10,4 +10,3 @@ type Finding struct {
 	File     string   `json:"file"`
 	Line     int      `json:"line"`
 	Column   int      `json:"column"`
-}
