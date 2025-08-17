@@ -1,12 +1,12 @@
-// Copyright 2024 MdLint Authors
+right (c) 2024
 
 package findings
 
-// Finding represents a lint finding.
+// Finding represents a single rule violation.
 type Finding struct {
-	Rule    string `json:"rule"`
-	Message string `json:"message"`
-	File    string `json:"file"`
-	Line    int    `json:"line"`
-	Column  int    `json:"column"`
-}
+	Rule     string   `json:"rule"`
+	Severity Severity `json:"severity"`
+	Message  string   `json:"message"`
+	File     string   `json:"file"`
+	Line     int      `json:"line"`
+	Column   int      `json:"column"`
