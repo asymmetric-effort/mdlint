@@ -1,7 +1,4 @@
-// Copyright 2025 Sam Caldwell
-// SPDX-License-Identifier: MIT
-
-module github.com/asymmetric-effort/mdlint
+module github.com/sam-caldwell/mdlint
 
 go 1.24.6
 
@@ -13,3 +10,4 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 )
+

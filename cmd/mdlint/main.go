@@ -1,7 +1,6 @@
 // Copyright 2025 Sam Caldwell
-// SPDX-License-Identifier: MIT
-
-// Package main provides the command-line interface for mdlint.
+//
+// MdLint is a command-line application for linting Markdown files.
 package main
 
 import (
@@ -9,7 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
-
+	"github.com/sam-caldwell/mdlint/internal/version"
 	"github.com/asymmetric-effort/mdlint/internal/config"
 	"github.com/asymmetric-effort/mdlint/internal/engine"
 	"github.com/asymmetric-effort/mdlint/internal/formatter"
