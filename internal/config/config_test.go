@@ -24,6 +24,9 @@ func TestLoadDefault(t *testing.T) {
 	if cfg.FailureThreshold != "warning" {
 		t.Fatalf("unexpected failure threshold %q", cfg.FailureThreshold)
 	}
+	if cfg.Limits.MaxFileSize != 1<<20 || cfg.Limits.MaxFiles != 100 || cfg.Limits.Concurrency != 4 {
+		t.Fatalf("unexpected limits: %+v", cfg.Limits)
+	}
 }
 
 // TestLoadMergePrecedence ensures CLI overrides project config which overrides user config.
@@ -87,4 +90,3 @@ func TestLoadValidationError(t *testing.T) {
 		t.Fatalf("expected error for unknown field")
 	}
 }
-

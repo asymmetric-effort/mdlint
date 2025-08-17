@@ -43,14 +43,15 @@ func main() {
 				fmt.Fprintln(cmd.OutOrStdout(), "MD9000 TODO found")
 				return nil
 			}
-			cfg, err := config.Load(cfgPath)
+			cfgOverride := config.Config{}
+			if formatFlag != "" {
+				cfgOverride.Output.Format = formatFlag
+			}
+			cfg, err := config.Load(cfgOverride, cfgPath)
 			if err != nil {
 				return err
 			}
-			if formatFlag != "" {
-				cfg.Format = formatFlag
-			}
-			eng := engine.Engine{}
+			eng := engine.Engine{Limits: cfg.Limits}
 			fs, err := eng.Run(args)
 			if err != nil {
 				return err
@@ -58,7 +59,7 @@ func main() {
 			if len(fs) == 0 {
 				return nil
 			}
-			out, err := formatter.Format(fs, cfg.Format)
+			out, err := formatter.Format(fs, cfg.Output.Format)
 			if err != nil {
 				return err
 			}

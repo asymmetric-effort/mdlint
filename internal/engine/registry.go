@@ -28,6 +28,14 @@ func Register(rule Rule) {
 	registry[id] = rule
 }
 
+// GetRule returns the rule with the given identifier if registered.
+func GetRule(id string) (Rule, bool) {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
+	r, ok := registry[id]
+	return r, ok
+}
+
 // Rules returns all registered rules sorted by their identifiers. The returned
 // slice is a copy and modifications to it do not affect the registry.
 func Rules() []Rule {
@@ -39,3 +47,4 @@ func Rules() []Rule {
 	}
 	sort.Slice(rules, func(i, j int) bool { return rules[i].ID() < rules[j].ID() })
 	return rules
+}

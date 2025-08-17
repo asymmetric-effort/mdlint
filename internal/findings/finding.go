@@ -1,4 +1,5 @@
-right (c) 2024
+// Copyright 2025 The mdlint Authors
+// SPDX-License-Identifier: MIT
 
 package findings
 
@@ -10,3 +11,4 @@ type Finding struct {
 	File     string   `json:"file"`
 	Line     int      `json:"line"`
 	Column   int      `json:"column"`
+}

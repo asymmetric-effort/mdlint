@@ -2,32 +2,25 @@
 
 package engine
 
-// Rule defines a linting rule that can be applied to a node within a file.
+// Rule defines a linting rule applied to Markdown content.
 // ID must return a unique identifier for the rule. Apply evaluates the rule
-// against the provided node and returns any findings.
+// against the provided content using optional configuration and returns any findings.
 type Rule interface {
 	// ID returns the unique identifier of the rule.
 	ID() string
-	// Apply evaluates the rule against the given node and context. It returns
-	// zero or more findings describing rule violations.
-	Apply(node any, ctx *Context) []Finding
-}
-
-// Context carries information about the file being processed.
-type Context struct {
-	// FilePath is the absolute path to the file currently being linted.
-	FilePath string
+	// Apply evaluates the rule against the given content and optional configuration.
+	// It returns zero or more findings describing rule violations.
+	Apply(content string, cfg any) []Finding
 }
 
 // Finding describes a rule violation discovered during linting.
 type Finding struct {
-	// RuleID is the identifier of the rule that produced the finding.
-	RuleID string
-	// Location describes where the finding occurred. Typically this is a file
-	// path optionally followed by a line number.
-	Location string
+	// Rule is the identifier of the rule that produced the finding.
+	Rule string
+	// Line is the 1-based line number of the violation.
+	Line int
+	// Column is the 1-based column number of the violation.
+	Column int
 	// Message explains the nature of the finding.
 	Message string
-	// Severity indicates the importance of the finding.
-	Severity string
 }

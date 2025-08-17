@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Copyright 2024
 
 package engine

@@ -29,7 +29,7 @@ const defaultLineLength = 80
 
 // init registers the rule in the engine registry.
 func init() {
-	engine.RegisterRule(Rule{})
+	engine.Register(Rule{})
 }
 
 // ID returns the rule identifier.

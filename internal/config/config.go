@@ -8,9 +8,9 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
-	"gopkg.in/yaml.v3"
 )
 
 // Severity represents a rule severity level.
@@ -26,6 +26,7 @@ type Config struct {
 	Heading          HeadingConfig         `yaml:"heading"`
 	Output           OutputConfig          `yaml:"output"`
 	FailureThreshold Severity              `yaml:"failure_threshold"`
+	Limits           LimitsConfig          `yaml:"limits"`
 }
 
 // PathConfig defines per-path overrides.
@@ -54,6 +55,13 @@ type OutputConfig struct {
 	Color  string `yaml:"color"`
 }
 
+// LimitsConfig defines resource usage constraints.
+type LimitsConfig struct {
+	MaxFileSize int64 `yaml:"max_file_size"`
+	MaxFiles    int   `yaml:"max_files"`
+	Concurrency int   `yaml:"concurrency"`
+}
+
 // DefaultConfig returns configuration with built-in defaults.
 func DefaultConfig() Config {
 	allowMixed := false
@@ -62,6 +70,7 @@ func DefaultConfig() Config {
 		Output:           OutputConfig{Format: "json", Color: "auto"},
 		Heading:          HeadingConfig{AllowMixed: &allowMixed},
 		FailureThreshold: "warning",
+		Limits:           LimitsConfig{MaxFileSize: 1 << 20, MaxFiles: 100, Concurrency: 4},
 	}
 }
 
@@ -172,6 +181,15 @@ func (c Config) Validate() error {
 	if err := checkSev(c.FailureThreshold); err != nil {
 		return fmt.Errorf("invalid failure threshold: %w", err)
 	}
+	if c.Limits.MaxFileSize < 0 {
+		return fmt.Errorf("invalid max file size %d", c.Limits.MaxFileSize)
+	}
+	if c.Limits.MaxFiles < 0 {
+		return fmt.Errorf("invalid max files %d", c.Limits.MaxFiles)
+	}
+	if c.Limits.Concurrency < 0 {
+		return fmt.Errorf("invalid concurrency %d", c.Limits.Concurrency)
+	}
 	return nil
 }
 
@@ -237,6 +255,15 @@ func merge(dst *Config, src Config) {
 	if src.FailureThreshold != "" {
 		dst.FailureThreshold = src.FailureThreshold
 	}
+	if src.Limits.MaxFileSize != 0 {
+		dst.Limits.MaxFileSize = src.Limits.MaxFileSize
+	}
+	if src.Limits.MaxFiles != 0 {
+		dst.Limits.MaxFiles = src.Limits.MaxFiles
+	}
+	if src.Limits.Concurrency != 0 {
+		dst.Limits.Concurrency = src.Limits.Concurrency
+	}
 }
 
 func userConfigPath() string {
@@ -249,4 +276,3 @@ func userConfigPath() string {
 	}
 	return filepath.Join(home, ".config", "mdlint", "config.yaml")
 }
-

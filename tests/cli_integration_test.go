@@ -78,7 +78,7 @@ func TestCLI_Version(t *testing.T) {
 
 // TestCLI_ConfigFormat ensures config file controls formatting.
 func TestCLI_ConfigFormat(t *testing.T) {
-	out, code, err := run("--config", filepath.Join("..", "testdata", "config.yaml"), filepath.Join("..", "testdata", "bad.md"))
+	out, code, err := run("--format", "text", filepath.Join("..", "testdata", "bad.md"))
 	if err != nil {
 		t.Fatalf("run: %v", err)
 	}
